@@ -17,3 +17,12 @@ button.onclick = () => {
 };
 
 app.append(button);
+
+let cookieCount = 0;
+button.onclick = () => {
+  cookieCount++;
+  button.innerHTML = `Clicked ${cookieCount} times 🖤`; // Update button text
+};
+
+// Append the button to the app element
+app.append(button);
