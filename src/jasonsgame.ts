@@ -19,9 +19,18 @@ button.onclick = () => {
 app.append(button);
 
 let cookieCount = 0;
+
+function updateCounterDisplay() {
+  button.innerHTML = `${cookieCount} devils clicked!😈`;
+}
+
 button.onclick = () => {
   cookieCount++;
-  button.innerHTML = `Clicked ${cookieCount} times 🖤`; // Update button text
+  updateCounterDisplay();
+  setInterval(() => {
+    cookieCount++;
+    updateCounterDisplay();
+  }, 1000);
 };
 
 // Append the button to the app element
