@@ -3,7 +3,7 @@ import "./style.css";
 // Find the div with the id of app in HTML
 const app: HTMLDivElement = document.querySelector("#app")!;
 
-const gameName = "Money Money Money! 💸";
+const gameName = "Money Money Money 💰💰💰";
 document.title = gameName;
 
 // Add the game name as a header
@@ -11,72 +11,119 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
-// Create the button with the initial text
+// Create a display for the current counter value
+const counterDisplay = document.createElement("div");
+let counter = 0;
+counterDisplay.innerHTML = `${counter.toFixed(2)} units`;
+app.append(counterDisplay);
+
+const growthRateDisplay = document.createElement("div");
+let growthRate = 0; // Initial growth rate, no auto increase initially
+growthRateDisplay.innerHTML = `Growth Rate: ${growthRate.toFixed(2)} units/sec`;
+app.append(growthRateDisplay);
+
+// Create a display for the items purchased
+const itemsPurchasedDisplay = document.createElement("div");
+let itemsPurchased = { A: 0, B: 0, C: 0 };
+itemsPurchasedDisplay.innerHTML = `Items purchased: A: ${itemsPurchased.A}, B: ${itemsPurchased.B}, C: ${itemsPurchased.C}`;
+app.append(itemsPurchasedDisplay);
+
+let priceA = 10;
+let priceB = 100;
+let priceC = 1000;
+// Create the button to click for units
 const button = document.createElement("button");
 button.innerHTML = "Click me! 😈";
-
-// Create the upgrade button and money counter display
-const upgradeButton = document.createElement("button");
-const moneyCounterDisplay = document.createElement("div");
-upgradeButton.innerHTML = "Upgrade! 💰";
-upgradeButton.disabled = true; // Initially disabled
 app.append(button);
-app.append(upgradeButton);
-app.append(moneyCounterDisplay);
 
-let counter = 0;
-let lastFrameTime = 0;
-let moneyCounter = 0;
+// Create buttons for upgrades
+const upgradeAButton = document.createElement("button");
+upgradeAButton.innerHTML = `Buy A (${priceA} units , +0.1 units/sec)`;
+upgradeAButton.disabled = true;
+app.append(upgradeAButton);
 
-// Function to update the counter display in the button
-function updateCounterDisplay() {
-  button.innerHTML = `${counter.toFixed(2)} units 🖤`;
-}
+const upgradeBButton = document.createElement("button");
+upgradeBButton.innerHTML = `Buy B (${priceB} units , +2.0 units/sec)`;
+upgradeBButton.disabled = true;
+app.append(upgradeBButton);
 
-// Function to update the money counter display
-function updateMoneyCounter() {
-  moneyCounterDisplay.innerHTML = `Upgrades: ${moneyCounter}`;
-  if (counter >= 10) {
-    upgradeButton.disabled = false; // Enable upgrade button if counter >= 10
-  } else {
-    upgradeButton.disabled = true; // Disable it otherwise
-  }
-}
+const upgradeCButton = document.createElement("button");
+upgradeCButton.innerHTML = `Buy C (${priceC} units , +50 units/sec)`;
+upgradeCButton.disabled = true;
+app.append(upgradeCButton);
 
-// Handle upgrade button clicks
-upgradeButton.onclick = () => {
-  if (counter >= 10) {
-    counter -= 10; // Deduct 10 units from the counter
-    moneyCounter += 1; // Increase the money counter
-    updateCounterDisplay(); // Update the displayed counter
-    updateMoneyCounter(); // Update the money counter display
+let isFirstClick = false;
+
+upgradeAButton.onclick = () => {
+  if (counter >= priceA) {
+    counter -= priceA;
+    growthRate += 0.1;
+    itemsPurchased.A += 1;
+    priceA *= 1.15;
+    updateDisplays();
   }
 };
 
-// Handle the main button click and start the counter
-button.onclick = () => {
-  // Frame-based counter update
-  function updateCounter(timestamp: number) {
-    if (lastFrameTime === 0) {
-      lastFrameTime = timestamp; // Initialize the time tracker
-    }
+upgradeBButton.onclick = () => {
+  if (counter >= priceB) {
+    counter -= 100;
+    growthRate += 2.0;
+    itemsPurchased.B += 1;
+    priceB *= 1.15;
+    updateDisplays();
+  }
+};
 
-    const deltaTime = timestamp - lastFrameTime; // Time since last frame
+upgradeCButton.onclick = () => {
+  if (counter >= priceC) {
+    counter -= 1000;
+    growthRate += 50.0;
+    itemsPurchased.C += 1;
+    priceC *= 1.15;
+    updateDisplays();
+  }
+};
+
+function updateDisplays() {
+  counterDisplay.innerHTML = `${counter.toFixed(2)} units`;
+  growthRateDisplay.innerHTML = `Growth Rate: ${growthRate.toFixed(2)} units/sec`;
+  itemsPurchasedDisplay.innerHTML = `Items purchased: A: ${itemsPurchased.A}, B: ${itemsPurchased.B}, C: ${itemsPurchased.C}`;
+
+  upgradeAButton.innerHTML = `Buy A (${priceA.toFixed(2)} units, +0.1 units/sec)`;
+  upgradeBButton.innerHTML = `Buy B (${priceB.toFixed(2)} units, +2.0 units/sec)`;
+  upgradeCButton.innerHTML = `Buy C (${priceC.toFixed(2)} units, +50 units/sec)`;
+  // Enable/disable upgrade buttons based on current counter
+  upgradeAButton.disabled = counter < priceA;
+  upgradeBButton.disabled = counter < priceB;
+  upgradeCButton.disabled = counter < priceC;
+}
+
+let lastFrameTime = 0;
+
+function updateCounter(timestamp: number) {
+  if (lastFrameTime === 0) {
     lastFrameTime = timestamp;
+  }
 
-    // Increment the counter based on time passed (1 unit per second)
-    counter += deltaTime / 1000;
+  const deltaTime = timestamp - lastFrameTime;
+  lastFrameTime = timestamp;
 
-    // Update the button text with the counter value and emoji
-    updateCounterDisplay();
+  counter += (growthRate * deltaTime) / 1000;
+  updateDisplays();
 
-    // Update the state of the upgrade button
-    updateMoneyCounter();
+  // Continue the loop
+  requestAnimationFrame(updateCounter);
+}
 
-    // Request the next frame
+button.onclick = () => {
+  counter++; // Increment on click
+  button.innerHTML = `🤑🤑🤑`;
+
+  if (!isFirstClick) {
+    isFirstClick = true;
+    growthRate = 1;
     requestAnimationFrame(updateCounter);
   }
 
-  // Start the animation (only once)
-  requestAnimationFrame(updateCounter);
+  updateDisplays();
 };
