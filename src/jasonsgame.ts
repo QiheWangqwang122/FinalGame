@@ -31,6 +31,7 @@ app.append(itemsPurchasedDisplay);
 let priceA = 10;
 let priceB = 100;
 let priceC = 1000;
+
 // Create the button to click for units
 const button = document.createElement("button");
 button.innerHTML = "Click me! 😈";
@@ -38,48 +39,49 @@ app.append(button);
 
 // Create buttons for upgrades
 const upgradeAButton = document.createElement("button");
-upgradeAButton.innerHTML = `Buy A (${priceA} units , +0.1 units/sec)`;
+upgradeAButton.innerHTML = `Buy A (${priceA.toFixed(2)} units, +0.1 units/sec)`;
 upgradeAButton.disabled = true;
 app.append(upgradeAButton);
 
 const upgradeBButton = document.createElement("button");
-upgradeBButton.innerHTML = `Buy B (${priceB} units , +2.0 units/sec)`;
+upgradeBButton.innerHTML = `Buy B (${priceB.toFixed(2)} units, +2.0 units/sec)`;
 upgradeBButton.disabled = true;
 app.append(upgradeBButton);
 
 const upgradeCButton = document.createElement("button");
-upgradeCButton.innerHTML = `Buy C (${priceC} units , +50 units/sec)`;
+upgradeCButton.innerHTML = `Buy C (${priceC.toFixed(2)} units, +50 units/sec)`;
 upgradeCButton.disabled = true;
 app.append(upgradeCButton);
 
 let isFirstClick = false;
 
+// Handle button clicks for upgrades
 upgradeAButton.onclick = () => {
   if (counter >= priceA) {
     counter -= priceA;
     growthRate += 0.1;
     itemsPurchased.A += 1;
-    priceA *= 1.15;
+    priceA *= 1.15; // Increase the price of A for the next purchase
     updateDisplays();
   }
 };
 
 upgradeBButton.onclick = () => {
   if (counter >= priceB) {
-    counter -= 100;
+    counter -= priceB;
     growthRate += 2.0;
     itemsPurchased.B += 1;
-    priceB *= 1.15;
+    priceB *= 1.15; // Increase the price of B for the next purchase
     updateDisplays();
   }
 };
 
 upgradeCButton.onclick = () => {
   if (counter >= priceC) {
-    counter -= 1000;
+    counter -= priceC;
     growthRate += 50.0;
     itemsPurchased.C += 1;
-    priceC *= 1.15;
+    priceC *= 1.15; // Increase the price of C for the next purchase
     updateDisplays();
   }
 };
@@ -89,9 +91,11 @@ function updateDisplays() {
   growthRateDisplay.innerHTML = `Growth Rate: ${growthRate.toFixed(2)} units/sec`;
   itemsPurchasedDisplay.innerHTML = `Items purchased: A: ${itemsPurchased.A}, B: ${itemsPurchased.B}, C: ${itemsPurchased.C}`;
 
+  // Update upgrade button labels
   upgradeAButton.innerHTML = `Buy A (${priceA.toFixed(2)} units, +0.1 units/sec)`;
   upgradeBButton.innerHTML = `Buy B (${priceB.toFixed(2)} units, +2.0 units/sec)`;
   upgradeCButton.innerHTML = `Buy C (${priceC.toFixed(2)} units, +50 units/sec)`;
+
   // Enable/disable upgrade buttons based on current counter
   upgradeAButton.disabled = counter < priceA;
   upgradeBButton.disabled = counter < priceB;
@@ -108,6 +112,7 @@ function updateCounter(timestamp: number) {
   const deltaTime = timestamp - lastFrameTime;
   lastFrameTime = timestamp;
 
+  // Increment counter based on growth rate and time passed
   counter += (growthRate * deltaTime) / 1000;
   updateDisplays();
 
@@ -116,14 +121,13 @@ function updateCounter(timestamp: number) {
 }
 
 button.onclick = () => {
-  counter++; // Increment on click
-  button.innerHTML = `🤑🤑🤑`;
-
   if (!isFirstClick) {
     isFirstClick = true;
-    growthRate = 1;
-    requestAnimationFrame(updateCounter);
+    growthRate = 1; // Start the default growth rate of 1 unit/sec
+    requestAnimationFrame(updateCounter); // Start automatic growth
   }
+  counter++; // Increment on click
+  button.innerHTML = `🤑 ${counter.toFixed(2)} units`;
 
   updateDisplays();
 };
