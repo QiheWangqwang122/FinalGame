@@ -27,16 +27,51 @@ const itemsPurchasedDisplay = document.createElement("div");
 itemsPurchasedDisplay.innerHTML = `Items purchased: `;
 app.append(itemsPurchasedDisplay);
 
-// Create the button to click for units
-const button = document.createElement("button");
-button.innerHTML = "Click me! 😈";
-app.append(button);
+// Define the available items with names, costs, rates, and descriptions
+interface Item {
+  name: string;
+  cost: number;
+  rate: number;
+  count: number;
+  description: string;
+}
 
-// Array to store available items (cost, rate, count)
-const availableItems = [
-  { name: "Worker", cost: 10, rate: 0.1, count: 0 },
-  { name: "Machine", cost: 100, rate: 2.0, count: 0 },
-  { name: "Factory", cost: 1000, rate: 50.0, count: 0 },
+const availableItems: Item[] = [
+  {
+    name: "Worker 🛠️",
+    cost: 10,
+    rate: 0.1,
+    count: 0,
+    description: "Hires a worker to help increase production.",
+  },
+  {
+    name: "Machine ⚙️",
+    cost: 100,
+    rate: 2.0,
+    count: 0,
+    description: "Invest in a machine for more automated production.",
+  },
+  {
+    name: "Factory 🏭",
+    cost: 1000,
+    rate: 50.0,
+    count: 0,
+    description: "Build a factory to mass-produce units.",
+  },
+  {
+    name: "Corporate Executive 👨‍💼",
+    cost: 5000,
+    rate: 100,
+    count: 0,
+    description: "Hire an executive to lead production strategies.",
+  },
+  {
+    name: "AI System 🤖",
+    cost: 10000,
+    rate: 500,
+    count: 0,
+    description: "Install an AI system for ultimate efficiency.",
+  },
 ];
 
 // Display available items and their buttons
@@ -44,7 +79,7 @@ const itemButtons: HTMLButtonElement[] = [];
 
 availableItems.forEach((item, index) => {
   const itemButton = document.createElement("button");
-  itemButton.innerHTML = `Buy ${item.name} (${item.cost} units, +${item.rate} units/sec)`;
+  itemButton.innerHTML = `Buy ${item.name} (${item.cost} units, +${item.rate} units/sec) - ${item.description}`;
   itemButton.disabled = true;
   itemButtons.push(itemButton);
   app.append(itemButton);
@@ -71,7 +106,7 @@ function updateDisplays() {
   // Update item button labels and enable/disable buttons based on available units
   availableItems.forEach((item, index) => {
     itemButtons[index].innerHTML =
-      `Buy ${item.name} (${item.cost.toFixed(2)} units, +${item.rate} units/sec)`;
+      `Buy ${item.name} (${item.cost.toFixed(2)} units, +${item.rate} units/sec) - ${item.description}`;
     itemButtons[index].disabled = counter < item.cost;
   });
 
@@ -97,6 +132,10 @@ function updateCounter(timestamp: number) {
   // Continue the loop
   requestAnimationFrame(updateCounter);
 }
+
+const button = document.createElement("button");
+button.innerHTML = "Click me! 😈";
+app.append(button);
 
 button.onclick = () => {
   if (!isFirstClick) {
