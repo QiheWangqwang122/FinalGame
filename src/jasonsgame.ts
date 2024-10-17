@@ -24,7 +24,7 @@ app.append(growthRateDisplay);
 
 // Create a display for the items purchased
 const itemsPurchasedDisplay = document.createElement("div");
-let itemsPurchased = { A: 0, B: 0, C: 0 };
+const itemsPurchased = { A: 0, B: 0, C: 0 };
 itemsPurchasedDisplay.innerHTML = `Items purchased: A: ${itemsPurchased.A}, B: ${itemsPurchased.B}, C: ${itemsPurchased.C}`;
 app.append(itemsPurchasedDisplay);
 
